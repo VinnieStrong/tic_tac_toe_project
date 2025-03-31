@@ -26,6 +26,7 @@ const players = (function() {
 
 
 const gameLogic = (function() {
+
     //Initiate current player
     let currentPlayer = players.player1;
 
@@ -48,30 +49,30 @@ const gameLogic = (function() {
         else {
             gameBoard.board[position] = currentPlayer.mark;
             gameBoard.printBoard();
+            if (checkWin()) {
+                console.log(`${currentPlayer.name}, you won! 🎉`);
+            }
+            switchPlayer();
         }
     };
 
-    const playGame = function() {
-        console.log(`${currentPlayer.name} is your turn`);
-        gameBoard.printBoard();
-    
-    }
-
-    const play = function(position) {
-        if (gameBoard.board[position] === 'X' || gameBoard.board[position] === 'O') {
-            console.log('This spot is already been taken');
-        }
-        else {
-            gameBoard.board[position] = currentPlayer.mark;
-            switchPlayer();
-            playGame();
-    
-        }
-    }
+    const checkWin = function() {
+        if (
+            (gameBoard.board[0] === gameBoard.board[1] && gameBoard.board[1] === gameBoard.board[2]) || 
+            (gameBoard.board[3] === gameBoard.board[4] && gameBoard.board[4] === gameBoard.board[5]) || 
+            (gameBoard.board[6] === gameBoard.board[7] && gameBoard.board[7] === gameBoard.board[8]) || 
+            (gameBoard.board[0] === gameBoard.board[3] && gameBoard.board[3] === gameBoard.board[6]) || 
+            (gameBoard.board[1] === gameBoard.board[4] && gameBoard.board[4] === gameBoard.board[7]) || 
+            (gameBoard.board[2] === gameBoard.board[5] && gameBoard.board[5] === gameBoard.board[8]) || 
+            (gameBoard.board[0] === gameBoard.board[4] && gameBoard.board[4] === gameBoard.board[8]) || 
+            (gameBoard.board[2] === gameBoard.board[4] && gameBoard.board[4] === gameBoard.board[6]) 
+        ) { return true; }
+        return false;
+    };
 
 
-return { switchPlayer, makeMove, playGame, play  }
+return { switchPlayer, makeMove, checkWin  }
 })();
-gameLogic.playGame();
+gameLogic.makeMove();
 
 
