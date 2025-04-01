@@ -1,0 +1,42 @@
+h1 {
+    color: blue;
+}
+
+.container {
+    display: grid;
+    grid-template-rows: repeat(3, 100px);
+    grid-template-columns: repeat(3, 100px);
+}
+
+.cell {
+    border: solid;
+}
+
+#top-left {
+    border-top: transparent;
+    border-left: transparent;
+}
+#top {
+    border-top: transparent;
+}
+#top-right {
+    border-top: transparent;
+    border-right: transparent;
+}
+#mid-left {
+    border-left: transparent;
+}
+#mid-right {
+    border-right: transparent;
+}
+#bottom-left {
+    border-left: transparent;
+    border-bottom: transparent;
+}
+#bottom {
+    border-bottom: transparent;
+}
+#bottom-right {
+    border-right: transparent;
+    border-bottom: transparent;
+}
