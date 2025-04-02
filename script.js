@@ -32,6 +32,7 @@ const gameLogic = (function() {
 
     //
     const switchPlayer = function() {
+        
         if (currentPlayer === players.player1) {
             currentPlayer = players.player2; 
         } else {
@@ -40,7 +41,7 @@ const gameLogic = (function() {
     };
 
     const makeMove = function(position) {
-
+        
         console.log(`${currentPlayer.name} is your turn`);
     
         if (gameBoard.board[position] === 'X' || gameBoard.board[position] === 'O') {
@@ -55,7 +56,15 @@ const gameLogic = (function() {
             switchPlayer();
         }
     };
-
+/* check this function and change all the events
+    const cells = document.querySelectorAll('.cell');
+    cells.forEach((cells, index) => {
+            cell.addEventListener('click', () => {
+                makeMove(index);
+                cell.textContent = gameBoard.board[index];
+            })
+        })
+*/
     //const play = function() {
         
     //}
@@ -74,21 +83,7 @@ const gameLogic = (function() {
         return false;
     };
 
-    const printCurrentPlayer = function() {
-        const currentDisplay = document.createElement('p');
-        currentDisplay.textContent = `${gameLogic.currentPlayer.name} is your turn, make a move!`;
-        document.getElementById('hanger').appendChild(currentDisplay);
-    }
-
-    const startGame = function() {
-        startButton.addEventListener('click', () => {
-            printCurrentPlayer();
-
-        })
-    }
-
-
-return { switchPlayer, makeMove, checkWin, currentPlayer  }
+return { switchPlayer, makeMove, checkWin, currentPlayer }
 })();
 
 const display = (function() {
@@ -103,65 +98,67 @@ const display = (function() {
     const bottomLeftCell = document.getElementById('bottom-left');
     const bottomCell = document.getElementById('bottom');
     const bottomRightCell = document.getElementById('bottom-right');
-
-    const render = function() {
-        bottomLeftCell.textContent = `${gameBoard.board[0]}`;
-        bottomCell.textContent = `${gameBoard.board[1]}`;
-        bottomRightCell.textContent = `${gameBoard.board[2]}`;
-        midLeftCell.textContent = `${gameBoard.board[3]}`;
-        centerCell.textContent = `${gameBoard.board[4]}`;
-        midRightCell.textContent = `${gameBoard.board[5]}`;
-        topLeftCell.textContent = `${gameBoard.board[6]}`;
-        topCell.textContent = `${gameBoard.board[7]}`;
-        topRightCell.textContent = `${gameBoard.board[8]}`;
-    }
+        
 
     topLeftCell.addEventListener('click', () => {
         gameBoard.board[6] = gameLogic.currentPlayer.mark;
-        render();
+        topLeftCell.textContent = `${gameBoard.board[6]}`
     })
     topCell.addEventListener('click', () => {
         gameBoard.board[7] = gameLogic.currentPlayer.mark;
-        render();
+        topCell.textContent = `${gameBoard.board[7]}`
+
     })
     topRightCell.addEventListener('click', () => {
         gameBoard.board[8] = gameLogic.currentPlayer.mark;
-        render();
+        topRightCell.textContent = `${gameBoard.board[6]}`
     })
     midLeftCell.addEventListener('click', () => {
         gameBoard.board[3] = gameLogic.currentPlayer.mark;
-        render();
+        midLeftCell.textContent = `${gameBoard.board[3]}`
         })
     centerCell.addEventListener('click', () => {
         gameBoard.board[4] = gameLogic.currentPlayer.mark;
-        render();    
+        centerCell.textContent = `${gameBoard.board[4]}`
         })
     midRightCell.addEventListener('click', () => {
         gameBoard.board[5] = gameLogic.currentPlayer.mark;
-        render();   
+        midRightCell.textContent = `${gameBoard.board[5]}`
         })
     bottomLeftCell.addEventListener('click', () => {
         gameBoard.board[0] = gameLogic.currentPlayer.mark;
-        render();    
+        bottomLeftCell.textContent = `${gameBoard.board[0]}`
         })
     bottomCell.addEventListener('click', () => {
         gameBoard.board[1] = gameLogic.currentPlayer.mark;
-        render();
+        bottomCell.textContent = `${gameBoard.board[1]}`
     })
     bottomRightCell.addEventListener('click', () => {
         gameBoard.board[2] = gameLogic.currentPlayer.mark;
-        render();
+        bottomRightCell.textContent = `${gameBoard.board[2]}`
     })
 
-    return {hanger, gameBoard, render}
+    const printCurrentPlayer = function() {
+
+        const currentDisplay = document.createElement('p');
+        currentDisplay.textContent = `${gameLogic.currentPlayer.name} is your turn, make a move!`;
+        document.getElementById('hanger').appendChild(currentDisplay);
+    }
+
+    const playNow = document.getElementById('play-now');
+    const show = document.getElementById('show')
+    playNow.addEventListener('click', () => {
+    show.style.display = 'block';
+    playNow.style.display = 'none';
+    printCurrentPlayer();
+    })
+
+    return {hanger, gameBoard, printCurrentPlayer}
 
 
 })();
 
-const test = function() {
-
-}
-
+/*
 const startButton = document.createElement('button');
 const buttonText = document.createTextNode('start the game');
 startButton.appendChild(buttonText);
@@ -174,5 +171,5 @@ startButton.addEventListener('click', () => {
 
 
 gameLogic.makeMove();
-
+*/
 
