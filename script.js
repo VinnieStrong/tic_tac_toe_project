@@ -13,12 +13,12 @@ const gameBoard = (function() {
 
 const players = (function() {
 
-    const createPlayer = function(name, mark) {
-        return { name, mark };
+    const createPlayer = function(name, mark, score) {
+        return { name, mark, score };
     }
 
-    let player1 = createPlayer('Vince', 'X');
-    let player2 = createPlayer('Dani', 'O');
+    let player1 = createPlayer('Vince', 'X', 0);
+    let player2 = createPlayer('Dani', 'O', 0);
 
     return  { createPlayer, player1, player2 } ;
 
@@ -30,6 +30,7 @@ const gameLogic = (function() {
     //Initiate current player
     let currentPlayer = players.player1;
     let gameOver = false;
+
 
     //
     const switchPlayer = function() {
@@ -55,9 +56,13 @@ const gameLogic = (function() {
         gameBoard.printBoard();
 
         if (checkWin()) {
+    
             console.log(`${currentPlayer.name}, you won! 🎉`);
             document.getElementById('hanger').innerHTML = '';
             display.printOnScreen(`${currentPlayer.name} you won!`);
+            currentPlayer.score = currentPlayer.score + 1;
+            display.displayPlayerScore()
+
             gameLogic.gameOver = true;
 
             const newGameButton = document.createElement('button');
@@ -84,6 +89,7 @@ const gameLogic = (function() {
         }
 
         switchPlayer();
+        display.displayPlayerScore()
         display.displayOnScreen();
     };
 
@@ -172,6 +178,12 @@ const display = (function() {
         //document.getElementById('hanger').appendChild(currentDisplay);
     }
 
+    const displayPlayerScore = function() {
+        let scoreDisplay = document.getElementById('display-score');
+        scoreDisplay.textContent = `${players.player1.name} score is ${players.player1.score} | ${players.player2.name} score is ${players.player2.score} `;
+        return;
+    }
+
 
     const playNow = document.getElementById('play-now');
     const show = document.getElementById('show');
@@ -185,7 +197,7 @@ const display = (function() {
     displayOnScreen();
     })
 
-    return {hanger, gameBoard, displayOnScreen, printOnScreen, displayBoard, cells}
+    return {hanger, gameBoard, displayOnScreen, printOnScreen, displayBoard, cells, displayPlayerScore}
 
 
 })();
