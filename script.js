@@ -29,6 +29,7 @@ const gameLogic = (function() {
 
     //Initiate current player
     let currentPlayer = players.player1;
+    let gameOver = false;
 
     //
     const switchPlayer = function() {
@@ -38,36 +39,67 @@ const gameLogic = (function() {
         } else {
             currentPlayer = players.player1;
         }
+        gameLogic.currentPlayer = currentPlayer;
     };
 
     const makeMove = function(position) {
         
         console.log(`${currentPlayer.name} is your turn`);
-    
+        display.displayOnScreen();
+
         if (gameBoard.board[position] === 'X' || gameBoard.board[position] === 'O') {
             console.log('This spot is already been taken');
+            return;
         }
-        else {
-            gameBoard.board[position] = currentPlayer.mark;
-            gameBoard.printBoard();
-            if (checkWin()) {
-                console.log(`${currentPlayer.name}, you won! 🎉`);
-            }
-            switchPlayer();
+        gameBoard.board[position] = currentPlayer.mark;
+        gameBoard.printBoard();
+
+        if (checkWin()) {
+            console.log(`${currentPlayer.name}, you won! 🎉`);
+            document.getElementById('hanger').innerHTML = '';
+            display.printOnScreen(`${currentPlayer.name} you won!`);
+            gameLogic.gameOver = true;
+
+            const newGameButton = document.createElement('button');
+            newGameButton.textContent = 'Start New Game';
+            document.getElementById('hanger').appendChild(newGameButton);
+            newGameButton.addEventListener('click', () => {
+                startGame();
+            });
+            return;
+        } 
+        else if (checkDraw()) {   
+            console.log(`its a draw`);
+            document.getElementById('hanger').innerHTML = '';
+            display.printOnScreen(`its a draw`);
+            gameLogic.gameOver = true;
+
+            const newGameButton = document.createElement('button');
+            newGameButton.textContent = 'Start New Game';
+            document.getElementById('hanger').appendChild(newGameButton);
+            newGameButton.addEventListener('click', () => {
+                startGame();
+            });
+            return;
         }
+
+        switchPlayer();
+        display.displayOnScreen();
     };
-/* check this function and change all the events
-    const cells = document.querySelectorAll('.cell');
-    cells.forEach((cells, index) => {
-            cell.addEventListener('click', () => {
-                makeMove(index);
-                cell.textContent = gameBoard.board[index];
-            })
-        })
-*/
-    //const play = function() {
-        
-    //}
+
+    const startGame = function() {
+        console.log('test');
+        gameBoard.board = [0,1,2,3,4,5,6,7,8];
+        display.cells.forEach((cell, index) => {
+            cell.textContent = '';
+        });
+        gameLogic.currentPlayer = players.player1;
+
+        document.getElementById('hanger').innerHTML = '';
+        display.displayOnScreen();
+        gameLogic.gameOver = false;
+
+    }
 
     const checkWin = function() {
         if (
@@ -83,7 +115,11 @@ const gameLogic = (function() {
         return false;
     };
 
-return { switchPlayer, makeMove, checkWin, currentPlayer }
+    const checkDraw = function() {
+        return !gameBoard.board.some(cell => typeof cell === 'number');
+    };
+
+return { switchPlayer, makeMove, checkWin, currentPlayer, startGame }
 })();
 
 const display = (function() {
@@ -98,65 +134,63 @@ const display = (function() {
     const bottomLeftCell = document.getElementById('bottom-left');
     const bottomCell = document.getElementById('bottom');
     const bottomRightCell = document.getElementById('bottom-right');
+
+    const cells = document.querySelectorAll('.cell');
+
+    const displayBoard = function() {
+
+        cells.forEach((cell, index) => {
+            cell.addEventListener('click', () => {
+                if (gameLogic.gameOver) return;
+                gameLogic.makeMove(index);
+                cell.textContent = gameBoard.board[index];     
+            })
+            return;
+        })
+        return;
+    }
+    displayBoard();
         
+    const displayOnScreen = function() {
 
-    topLeftCell.addEventListener('click', () => {
-        gameBoard.board[6] = gameLogic.currentPlayer.mark;
-        topLeftCell.textContent = `${gameBoard.board[6]}`
-    })
-    topCell.addEventListener('click', () => {
-        gameBoard.board[7] = gameLogic.currentPlayer.mark;
-        topCell.textContent = `${gameBoard.board[7]}`
+        const hanger = document.getElementById('hanger');
+        hanger.innerHTML = '';
+        hanger.textContent = `${gameLogic.currentPlayer.name} is your turn, make a move!`;
 
-    })
-    topRightCell.addEventListener('click', () => {
-        gameBoard.board[8] = gameLogic.currentPlayer.mark;
-        topRightCell.textContent = `${gameBoard.board[6]}`
-    })
-    midLeftCell.addEventListener('click', () => {
-        gameBoard.board[3] = gameLogic.currentPlayer.mark;
-        midLeftCell.textContent = `${gameBoard.board[3]}`
-        })
-    centerCell.addEventListener('click', () => {
-        gameBoard.board[4] = gameLogic.currentPlayer.mark;
-        centerCell.textContent = `${gameBoard.board[4]}`
-        })
-    midRightCell.addEventListener('click', () => {
-        gameBoard.board[5] = gameLogic.currentPlayer.mark;
-        midRightCell.textContent = `${gameBoard.board[5]}`
-        })
-    bottomLeftCell.addEventListener('click', () => {
-        gameBoard.board[0] = gameLogic.currentPlayer.mark;
-        bottomLeftCell.textContent = `${gameBoard.board[0]}`
-        })
-    bottomCell.addEventListener('click', () => {
-        gameBoard.board[1] = gameLogic.currentPlayer.mark;
-        bottomCell.textContent = `${gameBoard.board[1]}`
-    })
-    bottomRightCell.addEventListener('click', () => {
-        gameBoard.board[2] = gameLogic.currentPlayer.mark;
-        bottomRightCell.textContent = `${gameBoard.board[2]}`
-    })
-
-    const printCurrentPlayer = function() {
-
-        const currentDisplay = document.createElement('p');
-        currentDisplay.textContent = `${gameLogic.currentPlayer.name} is your turn, make a move!`;
-        document.getElementById('hanger').appendChild(currentDisplay);
+    
     }
 
+    const printOnScreen = function(print) {
+
+        const hanger = document.getElementById('hanger');
+        hanger.innerHTML = '';
+        hanger.textContent = print;
+
+        //const currentDisplay = document.createElement('p');
+        //currentDisplay.innerHTML = '';
+        //currentDisplay.textContent = `${gameLogic.currentPlayer.name} is your turn, make a move!`;
+        //document.getElementById('hanger').appendChild(currentDisplay);
+    }
+
+
     const playNow = document.getElementById('play-now');
-    const show = document.getElementById('show')
+    const show = document.getElementById('show');
     playNow.addEventListener('click', () => {
+        players.player1.name = prompt('Player1 (X), whats your name?');
+        players.player2.name = prompt('Player2 (O), whats your name?');
+
+
     show.style.display = 'block';
     playNow.style.display = 'none';
-    printCurrentPlayer();
+    displayOnScreen();
     })
 
-    return {hanger, gameBoard, printCurrentPlayer}
+    return {hanger, gameBoard, displayOnScreen, printOnScreen, displayBoard, cells}
 
 
 })();
+
+
 
 /*
 const startButton = document.createElement('button');
